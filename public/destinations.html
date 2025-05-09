@@ -451,7 +451,7 @@
             const to = document.getElementById('to').value;
 
             // Update the map with the new route
-            const mapUrl = `https://www.google.com/maps/embed/v1/directions?key=AIzaSyBII2owEryT6lH0hx57m4jxpDdwr69qYPY&origin=${encodeURIComponent(from)}&destination=${encodeURIComponent(to)}&mode=driving`;
+            const mapUrl = `https://www.google.com/maps/embed/v1/directions?key=&origin=${encodeURIComponent(from)}&destination=${encodeURIComponent(to)}&mode=driving`;
             document.getElementById('routeMap').src = mapUrl;
 
             // Update the route description
