@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Place Details</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .details-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .details-image {
+            width: 100%;
+            height: 360px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .image-description {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+        .details-info h2 {
+            margin-top: 0;
+            font-size: 32px;
+            color: #222;
+        }
+        .details-info p {
+            font-size: 16px;
+            margin: 8px 0;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #444;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+        .back-btn:hover {
+            background-color: #555;
+        }
+
+        @media (max-width: 600px) {
+            .details-image {
+                height: 220px;
+            }
+            .details-info h2 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="details-container">
+        <img id="place-img" class="details-image" src="" alt="Place Image" />
+        <div class="details-info">
+            <h2 id="place-title">Title</h2>
+            <p><span class="highlight">Location:</span> <span id="place-location"></span></p>
+            <p><span class="highlight">Rating:</span> <span id="place-rating"></span></p>
+            <p><span class="highlight">Best Time to Visit:</span> <span id="place-season"></span></p>
+            <p><span class="highlight">Description:</span></p>
+            <p id="place-description"></p>
+            <p class="image-description" id="place-img-description"></p>
+            <a href="dashboard.html" class="back-btn">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        document.getElementById("place-title").innerText = params.get("title") || "Place";
+        document.getElementById("place-location").innerText = params.get("location") || "Unknown";
+        document.getElementById("place-rating").innerText = params.get("rating") || "-";
+        document.getElementById("place-season").innerText = params.get("season") || "-";
+        document.getElementById("place-description").innerText = params.get("description") || "No info available.";
+        document.getElementById("place-img").src = params.get("image") || "";
+        document.getElementById("place-img").alt = params.get("title") || "Place Image";
+
+        // Add more details for the image
+        const imgDescription = {
+            "Taj Mahal": "The Taj Mahal, an exquisite symbol of love, was built by Mughal emperor Shah Jahan in memory of his wife Mumtaz Mahal. Its architectural beauty, paired with its serene surroundings, makes it a UNESCO World Heritage Site and one of the most iconic landmarks in the world.",
+            "Golden Temple": "The Golden Temple, also known as Harmandir Sahib, is a sacred Sikh gurdwara in Amritsar, Punjab. It is famous for its peaceful ambiance, stunning golden architecture, and the spiritual solace it offers to millions of pilgrims and visitors worldwide.",
+            "Munnar": "Munnar, located in the Western Ghats of Kerala, is a serene hill station known for its vast tea plantations, beautiful valleys, and pleasant weather. It's an ideal destination for nature lovers, trekkers, and those seeking peace amidst lush green landscapes.",
+            "Goa Beaches": "Goa, known for its vibrant beaches and lively atmosphere, is a coastal paradise offering everything from peaceful shores to bustling nightlife. Its beaches like Anjuna, Baga, and Calangute are famous worldwide for water sports, parties, and relaxed vibes.",
+            "Araku Valley": "Araku Valley is a picturesque hill station located in Andhra Pradesh, famous for its coffee plantations and scenic beauty. It offers a perfect blend of nature, adventure, and culture, making it a must-visit destination for nature lovers and coffee enthusiasts.",
+            "Kullu Manali": "Kullu Manali, located in Himachal Pradesh, is a popular hill station known for its beautiful valleys, adventure activities like trekking and skiing, and its proximity to the Solang Valley and Rohtang Pass. It's a favorite among honeymooners, trekkers, and adventure seekers.",
+            "Thousand Pillar Temple": "The Thousand Pillar Temple, located in Warangal, Telangana, is an architectural marvel dedicated to Lord Shiva. The temple is known for its intricate carvings, and it holds historical significance as an example of Kakatiya architecture.",
+            "Jaipur": "Jaipur, the capital of Rajasthan, is known for its royal heritage, palaces, forts, and vibrant culture. The city boasts iconic landmarks like the Amber Fort, Hawa Mahal, and City Palace, making it a top destination for history enthusiasts and culture seekers."
+        };
+
+        // Dynamically add the image description based on the title
+        const title = params.get("title");
+        if (title && imgDescription[title]) {
+            document.getElementById("place-img-description").innerText = imgDescription[title];
+        }
+
+        // Additional details for the new places
+        const placeDetails = {
+            "Taj Mahal": {
+                location: "Agra, Uttar Pradesh, India",
+                season: "October to March",
+                description: "The Taj Mahal is a symbol of eternal love and one of the finest examples of Mughal architecture. It stands on the banks of the Yamuna River, surrounded by beautifully manicured gardens, making it one of the most visited and admired monuments in the world."
+            },
+            "Golden Temple": {
+                location: "Amritsar, Punjab, India",
+                season: "November to March",
+                description: "The Golden Temple is a spiritual landmark for Sikhs, featuring stunning golden architecture surrounded by a tranquil water body. It offers visitors a unique experience of peace and devotion, with free meals served to thousands daily through the community kitchen."
+            },
+            "Munnar": {
+                location: "Kerala, India",
+                season: "November to March",
+                description: "Munnar is a breathtaking hill station located in Kerala, known for its lush tea plantations, sprawling landscapes, and scenic beauty. With cool weather throughout the year, Munnar is perfect for nature walks, trekking, and coffee plantation tours."
+            },
+            "Goa Beaches": {
+                location: "Goa, India",
+                season: "November to February",
+                description: "Goa is a tropical paradise known for its stunning beaches, crystal-clear waters, and vibrant nightlife. Its beaches, including Baga, Calangute, and Anjuna, are perfect for water sports, parties, and relaxing vacations, making it one of the most popular tourist destinations in India."
+            },
+            "Araku Valley": {
+                location: "Andhra Pradesh, India",
+                season: "October to March",
+                description: "Araku Valley offers a refreshing escape into the lap of nature, surrounded by lush hills and coffee plantations. It's perfect for a peaceful retreat with its cool weather and natural beauty."
+            },
+            "Kullu Manali": {
+                location: "Himachal Pradesh, India",
+                season: "November to February for snow, May to October for trekking and adventure",
+                description: "A popular destination for both adventure seekers and nature lovers, Kullu Manali offers beautiful valleys, snow-covered peaks, and thrilling activities like skiing, paragliding, and rafting."
+            },
+            "Thousand Pillar Temple": {
+                location: "Warangal, Telangana, India",
+                season: "Year-round",
+                description: "Known for its thousand intricately carved stone pillars, the temple is a historic marvel of the Kakatiya dynasty. It’s an important site for history buffs and those keen on ancient architecture."
+            },
+            "Jaipur": {
+                location: "Rajasthan, India",
+                season: "November to March",
+                description: "Jaipur is a colorful city that showcases the rich cultural heritage of Rajasthan. Visit the grand forts, palaces, and vibrant bazaars that will transport you to the royal past of India."
+            }
+        };
+
+        // Assign dynamic values for the new places
+        if (placeDetails[title]) {
+            document.getElementById("place-location").innerText = placeDetails[title].location;
+            document.getElementById("place-season").innerText = placeDetails[title].season;
+            document.getElementById("place-description").innerText = placeDetails[title].description;
+        }
+    </script>
+</body>
+</html>

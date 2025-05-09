@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Travel Blog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ecf0f1;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #3498db;
+        }
+        
+        main {
+            width: 90%;
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+        
+        section {
+            margin-bottom: 3rem;
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .places-container, .blogs-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .place-card, .blog-card {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .place-card:hover, .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .place-card img, .blog-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .place-description, .blog-title {
+            padding: 1rem;
+            font-weight: bold;
+            text-align: center;
+            background-color: white;
+        }
+        
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 1rem 1rem;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        .blog-content {
+            padding: 0 1rem 1rem;
+            color: #555;
+            line-height: 1.5;
+        }
+        
+        .fixed-actions {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .fixed-actions button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        
+        .fixed-actions button:hover {
+            background-color: #2980b9;
+            transform: scale(1.1);
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+        }
+        
+        .interaction-buttons {
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 0;
+            border-top: 1px solid #eee;
+        }
+        
+        .interaction-buttons button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .interaction-buttons button:hover {
+            color: #3498db;
+        }
+        
+        .comments-section {
+            padding: 1rem;
+            border-top: 1px solid #eee;
+            display: none;
+        }
+        
+        .comment {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+        
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3498db;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-weight: bold;
+        }
+        
+        .comment-content {
+            flex: 1;
+        }
+        
+        .comment-author {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+        
+        .comment-text {
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        .add-comment {
+            display: flex;
+            margin-top: 1rem;
+        }
+        
+        .add-comment input {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 0.5rem;
+        }
+        
+        .add-comment button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1 class="logo">Wanderlust India</h1>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="destinations.html">Destinations</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section class="recent-blogs">
+            <h2>Recent Travel Blogs</h2>
+            <div class="blogs-container">
+                <!-- Blog 1 -->
+                <div class="blog-card">
+                    <img src="https://www.rajasthantourdriver.com/wp-content/uploads/2023/08/sunrise.jpg" alt="Taj Mahal at Sunrise">
+                    <div class="blog-title">Sunrise at the Taj Mahal</div>
+                    <div class="blog-meta">
+                        <span>By Sarah Johnson</span>
+                        <span>May 15, 2023</span>
+                    </div>
+                    <div class="blog-content">
+                        Waking up before dawn to see the Taj Mahal at sunrise was worth every minute of lost sleep. As the first rays of sunlight hit the white marble...
+                    </div>
+                    <div class="interaction-buttons">
+                        <button onclick="toggleLike(this)"><i class="far fa-heart"></i> <span>42</span></button>
+                        <button onclick="toggleCommentSection(this)"><i class="far fa-comment"></i> <span>8</span></button>
+                    </div>
+                    <div class="comments-section">
+                        <div class="comment">
+                            <div class="comment-avatar">JD</div>
+                            <div class="comment-content">
+                                <div class="comment-author">John Doe</div>
+                                <div class="comment-text">Beautiful photos! I'm planning to visit next month.</div>
+                            </div>
+                        </div>
+                        <div class="comment">
+                            <div class="comment-avatar">AS</div>
+                            <div class="comment-content">
+                                <div class="comment-author">Aisha Singh</div>
+                                <div class="comment-text">The sunrise view is truly magical, isn't it?</div>
+                            </div>
+                        </div>
+                        <div class="add-comment">
+                            <input type="text" placeholder="Add a comment...">
+                            <button>Post</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blog 2 -->
+                <div class="blog-card">
+                    <img src="https://www.whyweseek.com/wp-content/uploads/2018/03/Golden-Temple-at-Night-Amritsar-1024x683.jpg" alt="Golden Temple">
+                    <div class="blog-title">Finding Peace at the Golden Temple</div>
+                    <div class="blog-meta">
+                        <span>By Michael Chen</span>
+                        <span>April 28, 2023</span>
+                    </div>
+                    <div class="blog-content">
+                        The Golden Temple in Amritsar is more than just a beautiful structure - it's an experience that touches your soul. The community kitchen serves free meals to thousands daily...
+                    </div>
+                    <div class="interaction-buttons">
+                        <button onclick="toggleLike(this)"><i class="far fa-heart"></i> <span>35</span></button>
+                        <button onclick="toggleCommentSection(this)"><i class="far fa-comment"></i> <span>5</span></button>
+                    </div>
+                    <div class="comments-section">
+                        <div class="comment">
+                            <div class="comment-avatar">PT</div>
+                            <div class="comment-content">
+                                <div class="comment-author">Priya Talwar</div>
+                                <div class="comment-text">Did you try the langar? It's such a humbling experience.</div>
+                            </div>
+                        </div>
+                        <div class="add-comment">
+                            <input type="text" placeholder="Add a comment...">
+                            <button>Post</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blog 3 -->
+                <div class="blog-card">
+                    <img src="https://tse4.mm.bing.net/th?id=OIP.eBSEtsiR9qgyWEiUw7SKJAHaE7&pid=Api&P=0&h=180" alt="Munnar Tea Plantations">
+                    <div class="blog-title">Tea Trails of Munnar</div>
+                    <div class="blog-meta">
+                        <span>By Emma Wilson</span>
+                        <span>April 10, 2023</span>
+                    </div>
+                    <div class="blog-content">
+                        The rolling hills of Munnar covered in tea plantations are like something from a dream. We stayed at a plantation homestay and learned about the tea-making process from leaf to cup...
+                    </div>
+                    <div class="interaction-buttons">
+                        <button onclick="toggleLike(this)"><i class="far fa-heart"></i> <span>28</span></button>
+                        <button onclick="toggleCommentSection(this)"><i class="far fa-comment"></i> <span>3</span></button>
+                    </div>
+                    <div class="comments-section">
+                        <div class="add-comment">
+                            <input type="text" placeholder="Add a comment...">
+                            <button>Post</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="popular-places">
+            <h2>Most Popular Places Visited in India</h2>
+            <div class="places-container">
+                <!-- Taj Mahal -->
+                <div class="place-card" onclick="goToDetails('Taj Mahal', 'A beautiful destination in Agra, known for its iconic white marble architecture.', '4.8⭐', 'https://travelogyindia.b-cdn.net/blog/wp-content/uploads/2016/03/Agra-Taj_Mahal.jpg')">
+                    <img src="https://travelogyindia.b-cdn.net/blog/wp-content/uploads/2016/03/Agra-Taj_Mahal.jpg" alt="Taj Mahal">
+                    <p class="place-description">Taj Mahal</p>
+                </div>
+
+                <!-- Golden Temple -->
+                <div class="place-card" onclick="goToDetails('Golden Temple', 'A serene environment in Amritsar, known for its spiritual significance.', '4.7⭐', 'https://www.planetware.com/photos-large/IND/india-top-attractions-harmandir-sahib.jpg')">
+                    <img src="https://www.planetware.com/photos-large/IND/india-top-attractions-harmandir-sahib.jpg" alt="Golden Temple">
+                    <p class="place-description">Golden Temple</p>
+                </div>
+
+                <!-- Munnar -->
+                <div class="place-card" onclick="goToDetails('Munnar', 'Known for its scenic beauty and tea plantations in Kerala.', '4.6⭐', 'https://www.holidify.com/images/bgImages/MUNNAR.jpg')">
+                    <img src="https://www.holidify.com/images/bgImages/MUNNAR.jpg" alt="Munnar">
+                    <p class="place-description">Munnar</p>
+                </div>
+
+                <!-- Goa Beaches -->
+                <div class="place-card" onclick="goToDetails('Goa Beaches', 'A popular beach destination with vibrant nightlife.', '4.5⭐', 'https://www.theunexplored.in/blog/wp-content/uploads/2024/11/48556039886_172c28b852_b.jpg')">
+                    <img src="https://www.theunexplored.in/blog/wp-content/uploads/2024/11/48556039886_172c28b852_b.jpg" alt="Goa Beaches">
+                    <p class="place-description">Goa Beaches</p>
+                </div>
+
+                <!-- Araku -->
+                <div class="place-card" onclick="goToDetails('Araku Valley', 'A picturesque valley in Andhra Pradesh known for its coffee plantations and lush green landscapes.', '4.6⭐', 'https://desitours.com/wp-content/uploads/2024/01/desitours_07219_Araku_Valley_Where_Adventure_Meets_Tranquility__f5df2620-349d-41cb-8be7-5741df9e9b10_11zon.jpg')">
+                    <img src="https://tse4.mm.bing.net/th?id=OIP.pyfkPPFQJlaTR_5LQrdw4gHaE6&pid=Api&P=0&h=180" alt="Araku Valley">
+                    <p class="place-description">Araku Valley</p>
+                </div>
+
+                <!-- Kullu Manali -->
+                <div class="place-card" onclick="goToDetails('Kullu Manali', 'A famous hill station in Himachal Pradesh known for its scenic beauty and adventure activities.', '4.7⭐', 'http://www.transindiatravels.com/wp-content/uploads/beas-river-1.jpg')">
+                    <img src="http://www.transindiatravels.com/wp-content/uploads/beas-river-1.jpg" alt="Kullu Manali">
+                    <p class="place-description">Kullu Manali</p>
+                </div>
+
+                <!-- Thousand Pillar Temple -->
+                <div class="place-card" onclick="goToDetails('Thousand Pillar Temple', 'A historical temple in Warangal, Telangana, known for its architectural beauty and intricate stone carvings.', '4.5⭐', 'https://warangaltourism.in/images/places-to-visit-warangal/headers/thousand-1000-pillar-temple-warangal-hanamkonda-tourism-entry-fee-timings-holidays-reviews-header.jpg')">
+                    <img src="https://warangaltourism.in/images/places-to-visit-warangal/headers/thousand-1000-pillar-temple-warangal-hanamkonda-tourism-entry-fee-timings-holidays-reviews-header.jpg" alt="Thousand Pillar Temple">
+                    <p class="place-description">Thousand Pillar Temple</p>
+                </div>
+
+                <!-- Jaipur -->
+                <div class="place-card" onclick="goToDetails('Jaipur', 'The capital of Rajasthan, known for its rich culture, forts, and palaces.', '4.6⭐', 'https://www.micato.com/wp-content/uploads/2018/09/jaipur-2.jpg')">
+                    <img src="https://www.micato.com/wp-content/uploads/2018/09/jaipur-2.jpg" alt="Jaipur">
+                    <p class="place-description">Jaipur</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="fixed-actions">
+            
+            <a href="ai-chat.html"><button><i class="fas fa-robot"></i></button></a>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Travel Blog. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Function to navigate to place-details.html with parameters
+        function goToDetails(title, description, rating, imageSrc) {
+            const url = new URL('place-details.html', window.location.origin);
+            url.searchParams.append("title", title);
+            url.searchParams.append("description", description);
+            url.searchParams.append("rating", rating);
+            url.searchParams.append("image", imageSrc);
+            window.location.href = url.toString();
+        }
+
+        function opengallery() {
+            window.location.href = 'gallery.html';
+        }
+        
+        function toggleLike(button) {
+            const icon = button.querySelector('i');
+            const countSpan = button.querySelector('span');
+            let count = parseInt(countSpan.textContent);
+            
+            if (icon.classList.contains('far')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                countSpan.textContent = count + 1;
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                countSpan.textContent = count - 1;
+            }
+        }
+        
+        function toggleCommentSection(button) {
+            const commentSection = button.closest('.interaction-buttons').nextElementSibling;
+            if (commentSection.style.display === 'block') {
+                commentSection.style.display = 'none';
+            } else {
+                commentSection.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Post - Travel Blog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --primary-dark: #2980b9;
+            --secondary-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --dark-color: #333;
+            --gray-color: #7f8c8d;
+            --light-gray: #f5f5f5;
+            --white: #ffffff;
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--light-gray);
+            color: var(--dark-color);
+        }
+
+        header {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .header-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--light-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Main Form Container */
+        main {
+            width: 90%;
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+
+        .form-container {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--secondary-color);
+            font-size: 2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .form-container h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+
+        /* Form Elements */
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .input-group input[type="text"],
+        .input-group input[type="number"],
+        .input-group input[type="file"],
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: var(--light-gray);
+        }
+
+        .input-group input[type="text"]:focus,
+        .input-group input[type="number"]:focus,
+        .input-group textarea:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            background-color: var(--white);
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .input-group input[type="file"] {
+            padding: 0.5rem;
+            background-color: transparent;
+        }
+
+        /* Image Preview */
+        .image-preview-container {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+            display: block;
+        }
+
+        /* Rating Stars */
+        .rating-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 0.3rem;
+        }
+
+        .rating-stars i {
+            color: #ddd;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .rating-stars i.active {
+            color: #f1c40f;
+        }
+
+        /* Location Picker */
+        .location-picker {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .location-picker .input-group {
+            flex: 1;
+        }
+
+        /* Tags Input */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .tag {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .tag-remove {
+            margin-left: 0.5rem;
+            cursor: pointer;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .submit-btn button {
+            padding: 0.8rem 2.5rem;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .submit-btn button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .submit-btn button:disabled {
+            background-color: var(--gray-color);
+            cursor: not-allowed;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            margin-top: 3rem;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--success-color);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .toast.error {
+            background-color: var(--error-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            .location-picker {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 1rem;
+            }
+
+            .form-container h2 {
+                font-size: 1.5rem;
+            }
+
+            .submit-btn button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">WANDERLUST INDIA</a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="destinations.html">Destinations</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="form-container">
+            <h2>Share Your Travel Experience</h2>
+            <form id="post-form" action="http://localhost:3000/api/upload" method="POST" enctype="multipart/form-data">
+                <!-- Photo Upload with Preview -->
+                <div class="input-group">
+                    <label for="photo">Upload Photos</label>
+                    <input type="file" id="photo" name="image" accept="image/*" multiple required>
+                    <div class="image-preview-container" id="image-preview-container">
+                        <img id="image-preview" class="image-preview" src="#" alt="Preview">
+                    </div>
+                </div>
+
+                <!-- Place Details -->
+                <div class="input-group">
+                    <label for="place-name">Place Name</label>
+                    <input type="text" id="place-name" name="placeName" placeholder="Where did you visit?" required>
+                </div>
+
+                <!-- Location -->
+                <div class="location-picker">
+                    <div class="input-group">
+                        <label for="country">Country</label>
+                        <select id="country" name="country" required>
+                            <option value="">Select Country</option>
+                            <option value="India">India</option>
+                            <option value="USA">United States</option>
+                            <option value="UK">United Kingdom</option>
+                            <option value="Japan">Japan</option>
+                            <option value="Australia">Australia</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" name="city" placeholder="City name" required>
+                    </div>
+                </div>
+
+                <!-- Travel Dates -->
+                <div class="input-group">
+                    <label for="travel-date">Travel Date</label>
+                    <input type="date" id="travel-date" name="travelDate" required>
+                </div>
+
+                <!-- Description -->
+                <div class="input-group">
+                    <label for="description">Your Experience</label>
+                    <textarea id="description" name="description" placeholder="Share your travel story, tips, and memorable moments..." required></textarea>
+                </div>
+
+                <!-- Rating -->
+                <div class="input-group">
+                    <label>Rating</label>
+                    <div class="rating-container">
+                        <div class="rating-stars" id="rating-stars">
+                            <i class="fas fa-star" data-rating="1"></i>
+                            <i class="fas fa-star" data-rating="2"></i>
+                            <i class="fas fa-star" data-rating="3"></i>
+                            <i class="fas fa-star" data-rating="4"></i>
+                            <i class="fas fa-star" data-rating="5"></i>
+                        </div>
+                        <input type="hidden" id="rating" name="rating" value="0" required>
+                        <span id="rating-value">0/5</span>
+                    </div>
+                </div>
+
+                <!-- Travel Tags -->
+                <div class="input-group">
+                    <label for="tags">Tags (Add up to 5)</label>
+                    <input type="text" id="tags" placeholder="e.g., adventure, family, beach">
+                    <div class="tags-container" id="tags-container"></div>
+                    <input type="hidden" id="selected-tags" name="tags">
+                </div>
+
+                <!-- Submit Button -->
+                <div class="submit-btn">
+                    <button type="submit" id="submit-btn">
+                        <span id="submit-text">Publish Post</span>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <footer>
+        <p>&copy; 2025 Travel Blog. All Rights Reserved.</p>
+    </footer>
+    <script>
+        // Define variables
+        const postForm = document.getElementById('post-form');
+        const ratingStars = document.getElementById('rating-stars');
+        const ratingInput = document.getElementById('rating');
+        const ratingValue = document.getElementById('rating-value');
+        const tagsInput = document.getElementById('tags');
+        const tagsContainer = document.getElementById('tags-container');
+        const selectedTags = document.getElementById('selected-tags');
+        const submitBtn = document.getElementById('submit-btn');
+        const submitText = document.getElementById('submit-text');
+        const photoInput = document.getElementById('photo');
+        const imagePreviewContainer = document.getElementById('image-preview-container');
+        const imagePreview = document.getElementById('image-preview');
+        const toast = document.getElementById('toast');
+        
+        let tags = [];
+        
+        // Initialize rating stars
+        ratingStars.querySelectorAll('i').forEach(star => {
+            star.addEventListener('click', () => {
+                const rating = parseInt(star.getAttribute('data-rating'));
+                ratingInput.value = rating;
+                ratingValue.textContent = `${rating}/5`;
+                
+                // Update star display
+                ratingStars.querySelectorAll('i').forEach((s, index) => {
+                    s.classList.toggle('active', index < rating);
+                });
+            });
+            
+            // Hover effect
+            star.addEventListener('mouseover', () => {
+                const hoverRating = parseInt(star.getAttribute('data-rating'));
+                ratingStars.querySelectorAll('i').forEach((s, index) => {
+                    s.style.color = index < hoverRating ? '#f1c40f' : '#ddd';
+                });
+            });
+            
+            star.addEventListener('mouseout', () => {
+                const currentRating = parseInt(ratingInput.value);
+                ratingStars.querySelectorAll('i').forEach((s, index) => {
+                    s.style.color = index < currentRating ? '#f1c40f' : '#ddd';
+                });
+            });
+        });
+        
+        // Handle tags input
+        tagsInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ',') {
+                e.preventDefault();
+                const tag = tagsInput.value.trim();
+                if (tag && !tags.includes(tag)) {
+                    if (tags.length >= 5) {
+                        showToast('Maximum 5 tags allowed', true);
+                        return;
+                    }
+                    tags.push(tag);
+                    renderTags();
+                    tagsInput.value = '';
+                }
+            }
+        });
+        
+        function renderTags() {
+            tagsContainer.innerHTML = '';
+            tags.forEach(tag => {
+                const tagElement = document.createElement('div');
+                tagElement.className = 'tag';
+                tagElement.innerHTML = `
+                    ${tag}
+                    <span class="tag-remove" data-tag="${tag}">&times;</span>
+                `;
+                tagsContainer.appendChild(tagElement);
+            });
+            selectedTags.value = tags.join(',');
+        }
+        
+        tagsContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('tag-remove')) {
+                const tagToRemove = e.target.getAttribute('data-tag');
+                tags = tags.filter(t => t !== tagToRemove);
+                renderTags();
+            }
+        });
+        
+        // Handle image preview
+        photoInput.addEventListener('change', () => {
+            const file = photoInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.src = e.target.result;
+                    imagePreviewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreviewContainer.style.display = 'none';
+            }
+        });
+        
+        // Toast notification function
+        function showToast(message, isError = false) {
+            toast.textContent = message;
+            toast.className = isError ? 'toast error show' : 'toast show';
+            setTimeout(() => {
+                toast.className = 'toast';
+            }, 3000);
+        }
+        
+        // Form submission
+        // Form submission
+    postForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Validate rating
+        if (parseInt(ratingInput.value) === 0) {
+            showToast('Please select a rating', true);
+            return;
+        }
+        
+        // Validate tags
+        if (tags.length === 0) {
+            showToast('Please add at least one tag', true);
+            return;
+        }
+        
+        // Validate image
+        if (photoInput.files.length === 0) {
+            showToast('Please upload at least one photo', true);
+            return;
+        }
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        submitText.textContent = 'Publishing...';
+        
+        try {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                showToast('You need to login first', true);
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const formData = new FormData();
+            
+            // Add all form data
+            formData.append('placeName', document.getElementById('place-name').value);
+            formData.append('country', document.getElementById('country').value);
+            formData.append('city', document.getElementById('city').value);
+            formData.append('travelDate', document.getElementById('travel-date').value);
+            formData.append('description', document.getElementById('description').value);
+            formData.append('rating', ratingInput.value);
+            formData.append('tags', tags.join(','));
+            
+            // Add all selected files
+            const files = photoInput.files;
+            for (let i = 0; i < files.length; i++) {
+                formData.append('image', files[i]);
+            }
+            
+            const response = await fetch('http://localhost:3000/posts', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok) {
+                showToast('Post published successfully!');
+                
+                // Redirect to profile after delay
+                setTimeout(() => {
+                    window.location.href = 'profile.html';
+                }, 1500);
+            } else {
+                showToast(result.message || 'Error publishing post', true);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showToast('Network error. Please try again.', true);
+        } finally {
+            submitBtn.disabled = false;
+            submitText.textContent = 'Publish Post';
+        }
+    });
+
+    </script>
+   </body>
+</html>

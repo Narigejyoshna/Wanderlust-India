@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel AI Assistant</title>
+    <style>
+        :root {
+            --primary: #2a9d8f;
+            --secondary: #264653;
+            --accent: #e9c46a;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .chat-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .chat-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .chat-header p {
+            opacity: 0.9;
+        }
+
+        .chat-box {
+            height: 500px;
+            overflow-y: auto;
+            padding: 1.5rem;
+            background-color: #fafafa;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            max-width: 80%;
+            padding: 0.8rem 1.2rem;
+            border-radius: 18px;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            background-color: var(--primary);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+
+        .ai-message {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-area {
+            display: flex;
+            padding: 1rem;
+            background-color: white;
+            border-top: 1px solid #eee;
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 0.8rem 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 30px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        #user-input:focus {
+            border-color: var(--primary);
+        }
+
+        #send-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 0 1.5rem;
+            margin-left: 0.8rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        #send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .typing-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.8rem 1.2rem;
+            background-color: #f1f1f1;
+            border-radius: 18px;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .typing-dots {
+            display: inline-flex;
+            margin-left: 8px;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            margin: 0 2px;
+            background-color: #666;
+            border-radius: 50%;
+            display: inline-block;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        .travel-tip {
+            background-color: #e9f5f4;
+            border-left: 4px solid var(--primary);
+            padding: 0.8rem;
+            margin: 0.8rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .destination-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            background-color: white;
+        }
+
+        .destination-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .destination-card p {
+            margin-bottom: 0.5rem;
+        }
+
+        .destination-card .best-time {
+            font-weight: bold;
+            color: var(--secondary);
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                margin: 0;
+                border-radius: 0;
+                height: 100vh;
+            }
+            
+            .chat-box {
+                height: calc(100vh - 180px);
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>Travel AI Assistant</h1>
+            <p>Your personal guide to world travel</p>
+        </div>
+        
+        <div class="chat-box" id="chat-box">
+            <div class="ai-message message">
+                <p>Hello traveler! ✈️ I'm your AI travel assistant. I can help with:</p>
+                <div class="travel-tip">
+                    <strong>Destination recommendations</strong> - Find perfect places to visit
+                </div>
+                <div class="travel-tip">
+                    <strong>Travel planning</strong> - Itineraries, budgets, and tips
+                </div>
+                <div class="travel-tip">
+                    <strong>Practical advice</strong> - Visas, packing, and local customs
+                </div>
+                <p>Where would you like to go today?</p>
+            </div>
+        </div>
+        
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Ask about destinations, visas, packing..." autofocus>
+            <button id="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Comprehensive travel knowledge base
+        const travelKnowledge = {
+            destinations: {
+                europe: [
+                    {
+                        name: "Paris, France",
+                        description: "The City of Light with iconic landmarks like the Eiffel Tower and Louvre Museum.",
+                        bestTime: "April-June or September-October",
+                        highlights: "Eiffel Tower, Louvre, Notre-Dame, Montmartre"
+                    },
+                    {
+                        name: "Santorini, Greece",
+                        description: "Stunning volcanic island with whitewashed buildings and breathtaking sunsets.",
+                        bestTime: "Late April to early November",
+                        highlights: "Oia sunset views, Red Beach, ancient Akrotiri"
+                    },
+                    {
+                        name: "Rome, Italy",
+                        description: "The Eternal City with incredible ancient history and delicious cuisine.",
+                        bestTime: "April-May and September-October",
+                        highlights: "Colosseum, Vatican City, Trevi Fountain, Roman Forum"
+                    }
+                ],
+                asia: [
+                    {
+                        name: "Bali, Indonesia",
+                        description: "Tropical paradise with lush jungles, beaches, and rich culture.",
+                        bestTime: "April-October (dry season)",
+                        highlights: "Ubud, Uluwatu Temple, Tegallalang Rice Terraces"
+                    },
+                    {
+                        name: "Kyoto, Japan",
+                        description: "Traditional Japanese culture with temples, gardens, and cherry blossoms.",
+                        bestTime: "March-May (cherry blossoms) or October-November (fall colors)",
+                        highlights: "Fushimi Inari Shrine, Arashiyama Bamboo Forest, Kinkaku-ji"
+                    },
+                    {
+                        name: "Jaipur, India",
+                        description: "The Pink City with magnificent palaces and vibrant markets.",
+                        bestTime: "October-March (cooler months)",
+                        highlights: "Amber Fort, Hawa Mahal, City Palace, Jantar Mantar"
+                    }
+                ],
+                americas: [
+                    {
+                        name: "New York City, USA",
+                        description: "The city that never sleeps with iconic skyscrapers and cultural diversity.",
+                        bestTime: "April-June and September-October",
+                        highlights: "Statue of Liberty, Central Park, Times Square, Broadway"
+                    },
+                    {
+                        name: "Rio de Janeiro, Brazil",
+                        description: "Vibrant city with stunning beaches and carnival celebrations.",
+                        bestTime: "December-March (summer and Carnival)",
+                        highlights: "Christ the Redeemer, Sugarloaf Mountain, Copacabana Beach"
+                    },
+                    {
+                        name: "Banff National Park, Canada",
+                        description: "Stunning mountain landscapes with turquoise lakes and wildlife.",
+                        bestTime: "June-August (summer) or December-March (winter sports)",
+                        highlights: "Lake Louise, Moraine Lake, Banff Gondola"
+                    }
+                ]
+            },
+            travelTips: {
+                packing: [
+                    "Roll clothes instead of folding to save space and reduce wrinkles",
+                    "Use packing cubes to organize your luggage efficiently",
+                    "Always pack a portable charger and universal adapter",
+                    "Bring a lightweight scarf - it can serve as a blanket, pillow, or cover-up",
+                    "Pack essential medications in your carry-on in case checked luggage gets delayed"
+                ],
+                flights: [
+                    "Book flights on Tuesday afternoon for the best deals",
+                    "Use incognito mode when searching for flights to avoid price increases",
+                    "The best seats for legroom are usually exit rows or bulkhead seats",
+                    "Download airline apps for easy boarding passes and flight updates",
+                    "Arrive at the airport at least 2 hours early for domestic, 3 hours for international"
+                ],
+                budgeting: [
+                    "Travel during shoulder season (between peak and off-peak) for lower prices",
+                    "Eat where locals eat - it's usually cheaper and more authentic",
+                    "Use public transportation instead of taxis to save money",
+                    "Consider alternative accommodations like hostels or vacation rentals",
+                    "Many museums offer free admission days - research before you go"
+                ]
+            },
+            visaInfo: {
+                requirements: [
+                    "Many countries require passports to be valid for 6 months beyond your travel dates",
+                    "The Schengen Area allows travel across 26 European countries with one visa",
+                    "Some countries offer visa on arrival or e-visa options",
+                    "Always check visa requirements at least 3 months before travel",
+                    "Some countries require proof of onward travel before entry"
+                ],
+                easyAccess: [
+                    "Thailand offers visa-free entry to many nationalities for 30 days",
+                    "Singapore allows visa-free entry for up to 90 days for many passports",
+                    "Turkey offers e-visa for most nationalities with quick online processing",
+                    "Japan has visa exemption for 90+ countries for short stays",
+                    "Mexico allows visa-free entry for up to 180 days for many nationalities"
+                ]
+            },
+            culturalTips: {
+                asia: [
+                    "In Japan, bowing is the traditional greeting (the deeper the bow, the more respect)",
+                    "In Thailand, avoid touching people's heads and point with your whole hand, not one finger",
+                    "In India, remove shoes before entering homes and many temples",
+                    "In China, present and receive items with both hands as a sign of respect",
+                    "In Muslim-majority countries, dress modestly especially when visiting religious sites"
+                ],
+                europe: [
+                    "In France, greet shopkeepers when entering small stores (say 'Bonjour')",
+                    "In Italy, cappuccino is only drunk in the morning - espresso in the afternoon",
+                    "In Germany, be punctual as lateness is considered rude",
+                    "In Spain, dinner is typically much later than in other countries (9-11pm)",
+                    "In Russia, bring a small gift if invited to someone's home (flowers or chocolates)"
+                ],
+                middleEast: [
+                    "In Arab countries, use your right hand for eating and greeting",
+                    "In Israel, many businesses close from Friday sunset to Saturday sunset for Shabbat",
+                    "In Iran, women must cover their hair in public (bring scarves)",
+                    "In Turkey, removing shoes is customary when entering homes",
+                    "In Egypt, haggling is expected in markets but not in fixed-price stores"
+                ]
+            }
+        };
+
+        // DOM elements
+        const chatBox = document.getElementById('chat-box');
+        const userInput = document.getElementById('user-input');
+
+        // Send message when Enter is pressed
+        userInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Main function to send and process messages
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (message === '') return;
+
+            // Add user message to chat
+            addMessage(message, 'user');
+            userInput.value = '';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            // Process after a short delay (simulating AI thinking)
+            setTimeout(() => {
+                removeTypingIndicator();
+                const response = generateTravelResponse(message);
+                addMessage(response, 'ai');
+            }, 1000 + Math.random() * 1500);
+        }
+
+        // Add message to chat box
+        function addMessage(content, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', `${sender}-message`);
+            
+            // Format content with HTML if needed
+            if (sender === 'ai') {
+                messageDiv.innerHTML = formatResponse(content);
+            } else {
+                messageDiv.textContent = content;
+            }
+            
+            chatBox.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        // Format AI responses with HTML
+        function formatResponse(content) {
+            // Simple formatting for now - could be enhanced
+            return `<p>${content}</p>`;
+        }
+
+        // Show typing indicator
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.classList.add('typing-indicator');
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = 'AI is thinking <div class="typing-dots"><span></span><span></span><span></span></div>';
+            chatBox.appendChild(typingDiv);
+            scrollToBottom();
+        }
+
+        // Remove typing indicator
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        // Scroll to bottom of chat
+        function scrollToBottom() {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Generate travel-related responses
+        function generateTravelResponse(message) {
+            const lowerMsg = message.toLowerCase();
+            
+            // Destination recommendations
+            if (containsAny(lowerMsg, ['where', 'destination', 'place', 'visit', 'go', 'recommend'])) {
+                return generateDestinationResponse(lowerMsg);
+            }
+            
+            // Travel tips and advice
+            else if (containsAny(lowerMsg, ['tip', 'advice', 'should', 'recommendation', 'suggestion'])) {
+                return generateTravelTipResponse(lowerMsg);
+            }
+            
+            // Visa and entry requirements
+            else if (containsAny(lowerMsg, ['visa', 'entry', 'require', 'passport', 'document'])) {
+                return generateVisaResponse(lowerMsg);
+            }
+            
+            // Cultural information
+            else if (containsAny(lowerMsg, ['culture', 'custom', 'tradition', 'etiquette', 'manners'])) {
+                return generateCulturalResponse(lowerMsg);
+            }
+            
+            // Packing questions
+            else if (containsAny(lowerMsg, ['pack', 'bring', 'luggage', 'suitcase', 'bag'])) {
+                return generatePackingResponse();
+            }
+            
+            // Flight questions
+            else if (containsAny(lowerMsg, ['flight', 'airline', 'fly', 'airport', 'book'])) {
+                return generateFlightResponse();
+            }
+            
+            // Budget questions
+            else if (containsAny(lowerMsg, ['cheap', 'expensive', 'cost', 'budget', 'money', 'price'])) {
+                return generateBudgetResponse();
+            }
+            
+            // General travel questions
+            else {
+                return generateGeneralTravelResponse();
+            }
+        }
+
+        // Helper functions
+        function containsAny(text, terms) {
+            return terms.some(term => text.includes(term));
+        }
+
+        function randomChoice(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        // Response generators
+        function generateDestinationResponse(query) {
+            let region = 'all';
+            if (query.includes('europe')) region = 'europe';
+            if (query.includes('asia')) region = 'asia';
+            if (query.includes('america') || query.includes('usa') || query.includes('canada') || query.includes('brazil')) region = 'americas';
+            
+            let destinations = [];
+            if (region === 'all') {
+                destinations = [
+                    ...travelKnowledge.destinations.europe,
+                    ...travelKnowledge.destinations.asia,
+                    ...travelKnowledge.destinations.americas
+                ];
+            } else {
+                destinations = travelKnowledge.destinations[region];
+            }
+            
+            const destination = randomChoice(destinations);
+            
+            return `
+                <div class="destination-card">
+                    <h3>${destination.name}</h3>
+                    <p>${destination.description}</p>
+                    <p class="best-time">Best time to visit: ${destination.bestTime}</p>
+                    <p>Highlights: ${destination.highlights}</p>
+                </div>
+                <p>Would you like more information about ${destination.name} or other destinations?</p>
+            `;
+        }
+
+        function generateTravelTipResponse() {
+            const tipCategory = randomChoice(Object.keys(travelKnowledge.travelTips));
+            const tip = randomChoice(travelKnowledge.travelTips[tipCategory]);
+            
+            return `
+                <div class="travel-tip">
+                    <strong>Travel Tip:</strong> ${tip}
+                </div>
+                <p>I have more tips about packing, flights, and budgeting. What would you like to know?</p>
+            `;
+        }
+
+        function generateVisaResponse() {
+            const visaInfo = randomChoice([
+                ...travelKnowledge.visaInfo.requirements,
+                ...travelKnowledge.visaInfo.easyAccess
+            ]);
+            
+            return `
+                <div class="travel-tip">
+                    <strong>Visa Information:</strong> ${visaInfo}
+                </div>
+                <p>Visa requirements vary by country and passport. Would you like specific information for a particular destination?</p>
+            `;
+        }
+
+        function generateCulturalResponse() {
+            const region = randomChoice(Object.keys(travelKnowledge.culturalTips));
+            const tip = randomChoice(travelKnowledge.culturalTips[region]);
+            
+            return `
+                <div class="travel-tip">
+                    <strong>Cultural Tip for ${region.charAt(0).toUpperCase() + region.slice(1)}:</strong> ${tip}
+                </div>
+                <p>Understanding local customs enhances your travel experience. Need advice for a specific country?</p>
+            `;
+        }
+
+        function generatePackingResponse() {
+            const tip = randomChoice(travelKnowledge.travelTips.packing);
+            return `
+                <div class="travel-tip">
+                    <strong>Packing Tip:</strong> ${tip}
+                </div>
+                <p>Packing efficiently can make your trip much more comfortable. Would you like a complete packing list?</p>
+            `;
+        }
+
+        function generateFlightResponse() {
+            const tip = randomChoice(travelKnowledge.travelTips.flights);
+            return `
+                <div class="travel-tip">
+                    <strong>Flight Tip:</strong> ${tip}
+                </div>
+                <p>Getting the best flight deals requires some strategy. Need help finding flights?</p>
+            `;
+        }
+
+        function generateBudgetResponse() {
+            const tip = randomChoice(travelKnowledge.travelTips.budgeting);
+            return `
+                <div class="travel-tip">
+                    <strong>Budget Tip:</strong> ${tip}
+                </div>
+                <p>Travel can be affordable with the right planning. Would you like cost estimates for specific destinations?</p>
+            `;
+        }
+
+        function generateGeneralTravelResponse() {
+            const responses = [
+                "I'd be happy to help with your travel questions. Could you be more specific about what you're looking for?",
+                "Travel planning can be exciting! What aspect would you like help with - destinations, visas, packing, or something else?",
+                "I specialize in all things travel. Would you like destination recommendations, travel tips, or practical advice?",
+                "That sounds like an interesting travel question! Could you tell me more about what you need to know?",
+                "I can help with destinations worldwide, travel planning, and practical advice. What would you like to know?"
+            ];
+            
+            return randomChoice(responses);
+        }
+    </script>
+</body>
+</html>

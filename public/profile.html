@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your Wanderlust India profile - View and manage your travel posts and gallery">
+    <meta name="keywords" content="India travel, travel profile, travel gallery, Wanderlust India">
+    <title>Profile | Wanderlust India</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* General Styles */
+        :root {
+            --primary-color: #3a86ff;
+            --secondary-color: #8338ec;
+            --accent-color: #ff006e;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+            --text-color: #333;
+            --text-light: #f8f9fa;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: var(--light-color);
+            overflow-x: hidden;
+        }
+        
+        /* Background Video */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .video-background video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: rgba(26, 26, 46, 0.9);
+            color: var(--text-light);
+            backdrop-filter: blur(10px);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin: 0 1rem;
+        }
+        
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            bottom: 0;
+            left: 0;
+            transition: var(--transition);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* Mobile Navigation */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Main Content */
+        main {
+            padding: 6rem 5% 2rem;
+            min-height: 100vh;
+        }
+        
+        .profile-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 3rem;
+            backdrop-filter: blur(5px);
+            animation: fadeInUp 0.8s ease;
+        }
+        
+        /* Profile Header */
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--primary-color);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .profile-pic:hover {
+            transform: scale(1.05);
+        }
+        
+        .profile-name {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+        
+        .profile-bio {
+            color: #666;
+            max-width: 600px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .profile-stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .profile-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-light);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(58, 134, 255, 0.1);
+        }
+        
+        /* Gallery Section */
+        .gallery-section {
+            margin-top: 3rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            bottom: -8px;
+            left: 0;
+            border-radius: 2px;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .gallery-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            aspect-ratio: 1/1;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .gallery-item:hover .gallery-img {
+            transform: scale(1.05);
+        }
+        
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+            padding: 1rem;
+            color: white;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+        
+        .gallery-place {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .gallery-rating {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .gallery-rating i {
+            color: var(--accent-color);
+            margin-right: 0.3rem;
+        }
+        
+        .no-posts {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+        
+        .no-posts i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark-color);
+            color: var(--text-light);
+            padding: 2rem 5%;
+            text-align: center;
+        }
+        
+        .copyright {
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+        
+        /* Edit Profile Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            animation: modalFadeIn 0.3s ease;
+            position: relative;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            transition: var(--transition);
+        }
+        
+        .close-modal:hover {
+            color: var(--accent-color);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.2);
+        }
+        
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .profile-pic-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .profile-pic-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary-color);
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+        
+        .upload-btn {
+            background-color: #f0f0f0;
+            color: #666;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+        
+        .upload-btn:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .profile-header {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 1rem 5%;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: var(--dark-color);
+                flex-direction: column;
+                align-items: center;
+                padding-top: 2rem;
+                transition: var(--transition);
+            }
+            
+            .nav-links.active {
+                left: 0;
+            }
+            
+            .nav-links li {
+                margin: 1rem 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .profile-container {
+                padding: 2rem;
+            }
+            
+            .profile-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .profile-container {
+                padding: 1.5rem;
+            }
+            
+            .profile-name {
+                font-size: 1.5rem;
+            }
+            
+            .profile-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .modal-footer {
+                flex-direction: column;
+            }
+            
+            .modal-footer .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Video Section -->
+    <div class="video-background">
+        <video autoplay muted loop id="bg-video">
+            <source src="https://videos.pexels.com/video-files/17973477/17973477-sd_640_360_30fps.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+    
+    <!-- Header Section -->
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">Wanderlust India</a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="destinations.html">Destinations</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main>
+        <div class="profile-container">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Profile Picture" class="profile-pic" id="profilePic">
+                <h1 class="profile-name" id="profileName"> Explorer</h1>
+                <p class="profile-bio" id="profileBio">Travel enthusiast | Photographer | Storyteller | Exploring India one destination at a time</p>
+                
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="postsCount">4</div>
+                        <div class="stat-label">Posts</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="followersCount">1.2K</div>
+                        <div class="stat-label">Followers</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="followingCount">356</div>
+                        <div class="stat-label">Following</div>
+                    </div>
+                </div>
+                
+                <div class="profile-actions">
+                    <button class="btn btn-primary" id="editProfileBtn">Edit Profile</button>
+                    <a href="add-post.html" class="btn btn-outline">Add New Post</a>
+                </div>
+            </div>
+            
+            <!-- Gallery Section -->
+            <div class="gallery-section">
+                <h2 class="section-title">My Travel Gallery</h2>
+                
+                <div class="gallery-grid">
+                    <!-- Gallery Item 1 -->
+                    <div class="gallery-item">
+                        <img src="https://travelogyindia.b-cdn.net/blog/wp-content/uploads/2016/03/Agra-Taj_Mahal.jpg" alt="Taj Mahal" class="gallery-img">
+                        <div class="gallery-overlay">
+                            <div class="gallery-place">Taj Mahal, Agra</div>
+                            <div class="gallery-rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.8</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gallery Item 2 -->
+                    <div class="gallery-item">
+                        <img src="https://www.planetware.com/photos-large/IND/india-top-attractions-harmandir-sahib.jpg" alt="Golden Temple" class="gallery-img">
+                        <div class="gallery-overlay">
+                            <div class="gallery-place">Golden Temple, Amritsar</div>
+                            <div class="gallery-rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.7</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gallery Item 3 -->
+                    <div class="gallery-item">
+                        <img src="https://www.holidify.com/images/bgImages/MUNNAR.jpg" alt="Munnar" class="gallery-img">
+                        <div class="gallery-overlay">
+                            <div class="gallery-place">Munnar, Kerala</div>
+                            <div class="gallery-rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.6</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+        
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal" id="editProfileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Profile</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <form id="profileForm">
+                <div class="profile-pic-upload">
+                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Profile Preview" class="profile-pic-preview" id="profilePicPreview">
+                    <input type="file" id="profilePicUpload" accept="image/*" style="display: none;">
+                    <button type="button" class="upload-btn" id="uploadBtn">Change Profile Picture</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" class="form-control" placeholder="Enter your full name" value=" Explorer">
+                </div>
+                
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" class="form-control" placeholder="Enter your username" value="explorer">
+                </div>
+                
+                <div class="form-group">
+                    <label for="bio">Bio</label>
+                    <textarea id="bio" class="form-control" placeholder="Tell us about yourself">Travel enthusiast | Photographer | Storyteller | Exploring India one destination at a time</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" class="form-control" placeholder="Where are you from?" value="Hyderabad, India">
+                </div>
+                
+                <div class="form-group">
+                    <label for="website">Website</label>
+                    <input type="url" id="website" class="form-control" placeholder="Your website URL" value="https://explorer.com">
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="copyright">
+            <p>&copy; 2025 Wanderlust India. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Menu Toggle
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const navLinks = document.getElementById('navLinks');
+            
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                mobileMenuBtn.innerHTML = navLinks.classList.contains('active') ? 
+                    '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+            });
+            
+            // Video Fallback
+            const video = document.getElementById('bg-video');
+            video.addEventListener('error', () => {
+                document.querySelector('.video-background').style.backgroundImage = 'url("https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1630&q=80")';
+                video.style.display = 'none';
+            });
+            
+            // Edit Profile Modal Functionality
+            const editProfileBtn = document.getElementById('editProfileBtn');
+            const editProfileModal = document.getElementById('editProfileModal');
+            const closeModal = document.getElementById('closeModal');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const profileForm = document.getElementById('profileForm');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const profilePicUpload = document.getElementById('profilePicUpload');
+            const profilePicPreview = document.getElementById('profilePicPreview');
+            const profilePic = document.getElementById('profilePic');
+            
+            // Open modal
+            editProfileBtn.addEventListener('click', () => {
+                editProfileModal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            });
+            
+            // Close modal
+            function closeProfileModal() {
+                editProfileModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            
+            closeModal.addEventListener('click', closeProfileModal);
+            cancelBtn.addEventListener('click', closeProfileModal);
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === editProfileModal) {
+                    closeProfileModal();
+                }
+            });
+            
+            // Profile picture upload
+            uploadBtn.addEventListener('click', () => {
+                profilePicUpload.click();
+            });
+            
+            profilePicUpload.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        profilePicPreview.src = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Profile picture click to open modal
+            profilePic.addEventListener('click', () => {
+                editProfileModal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            });
+            
+            // Form submission
+            profileForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Get form values
+                const fullName = document.getElementById('fullName').value;
+                const username = document.getElementById('username').value;
+                const bio = document.getElementById('bio').value;
+                const location = document.getElementById('location').value;
+                const website = document.getElementById('website').value;
+                const newProfilePic = profilePicPreview.src;
+                
+                // Update profile information
+                document.getElementById('profileName').textContent = fullName;
+                document.getElementById('profileBio').textContent = bio;
+                profilePic.src = newProfilePic;
+                
+                // In a real application, you would send this data to the server here
+                // fetch('/api/update-profile', {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //     },
+                //     body: JSON.stringify({
+                //         fullName,
+                //         username,
+                //         bio,
+                //         location,
+                //         website,
+                //         profilePic: newProfilePic
+                //     })
+                // })
+                // .then(response => response.json())
+                // .then(data => {
+                //     if (data.success) {
+                //         // Show success message
+                //         alert('Profile updated successfully!');
+                //         closeProfileModal();
+                //     }
+                // });
+                
+                // For demo purposes, just show a message and close the modal
+                alert('Profile updated successfully!');
+                closeProfileModal();
+            });
+            
+            
+            // Load user data from localStorage if available
+           // Load user posts
+        async function loadUserPosts() {
+            try {
+                const token = localStorage.getItem('authToken');
+                if (!token) {
+                    alert('Please login to view your posts');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetch('http://localhost:3000/posts', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to load posts');
+                }
+
+                const data = await response.json();
+                renderPosts(data.posts);
+            } catch (error) {
+                console.error('Error loading posts:', error);
+                document.querySelector('.gallery-grid').innerHTML = `
+                    <div class="no-posts">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Error loading posts. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderPosts(posts) {
+            const galleryGrid = document.querySelector('.gallery-grid');
+            
+            if (!posts || posts.length === 0) {
+                galleryGrid.innerHTML = `
+                    <div class="no-posts">
+                        <i class="fas fa-camera"></i>
+                        <p>No posts yet. Share your first travel experience!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            galleryGrid.innerHTML = ''; // Clear existing posts
+            
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'gallery-item';
+                postElement.innerHTML = `
+                    <img src="${post.imageUrl}" alt="${post.placeName}" class="gallery-img">
+                    <div class="gallery-overlay">
+                        <div class="gallery-place">${post.placeName}, ${post.city}</div>
+                        <div class="gallery-rating">
+                            <i class="fas fa-star"></i>
+                            <span>${post.rating}</span>
+                        </div>
+                    </div>
+                `;
+                galleryGrid.appendChild(postElement);
+            });
+        }
+
+        // Load posts when page loads
+        loadUserPosts();
+    });
+        
+    </script>
+</body>
+</html>
